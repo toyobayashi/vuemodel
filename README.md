@@ -1,5 +1,7 @@
 # vuemodel
 
+Use this if you do not want Vuex!
+
 ```ts
 import * as Vue from 'vue' // Vue 3
 
