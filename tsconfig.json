@@ -1,0 +1,15 @@
+{
+  "extends": "./node_modules/@tybys/tsgo/tsconfig/tsconfig.json",
+  "compilerOptions": {
+    "noEmit": true,
+    "jsx": "react",
+    "sourceMap": false,
+    "lib": [
+      "DOM",
+      "ES2020.Symbol.WellKnown"
+    ]
+  },
+  "include": [
+    "./src/**/*"
+  ]
+}
