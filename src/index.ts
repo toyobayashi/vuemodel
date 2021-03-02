@@ -2,86 +2,95 @@
 export type Subscriber<S extends object> = (state: S) => void
 
 /** @public */
-export interface SubscribeOptions {
+export interface ISubscribeOptions {
   prepend?: boolean
 }
 
 /** @public */
-export interface GettersTree<S extends object> {
+export interface IGettersTree<S extends object> {
   [x: string]: (state: S) => any
 }
 
 /** @public */
-export interface IVueModel<S extends object, G extends GettersTree<S>> {
+export interface IVueModel<S extends object, G extends IGettersTree<S>> {
   readonly state: S
   readonly getters: { [K in keyof G]: ReturnType<G[K]> }
-  subscribe (fn: Subscriber<S>, options?: SubscribeOptions): () => void
+  subscribe (fn: Subscriber<S>, options?: ISubscribeOptions): () => void
 }
 
-interface IVueModelAdapter {
-  getters: any
-  createState<T extends object> (target: { $$state: T }, getters?: GettersTree<T>): any
-  watch<T extends object>(source: T, cb: (value: T, ...args: any[]) => any, options?: {
-    immediate?: boolean
-    deep?: boolean
-    [x: string]: any
-  }): () => void
+interface IObservedData<T> {
+  $$state: T
 }
 
 /** @public */
-export interface IVue {
-  reactive?: Function
-  computed?: Function
-  watch?: Function
-  extend?: (options: any) => new () => { $watch: Function; _data: any; [x: string]: any }
+export type WatchFunction = <T>(source: T | (() => T), cb: (value: T, ...args: any[]) => any, options?: {
+  immediate?: boolean
+  deep?: boolean
+  [x: string]: any
+}) => () => void
+
+interface IVueAdapter {
+  getters: any
+  createState<T extends object> (target: IObservedData<T>, getters?: IGettersTree<T>): IObservedData<T>
+  watch: WatchFunction
+}
+
+/** @public */
+export interface IVueImpl {
+  reactive?: <T extends object> (target: T) => T
+  computed?: (fn: () => void) => any
+  watch?: WatchFunction
+  extend?: (options: any) => new () => { $watch: WatchFunction; _data: any; [x: string]: any }
   [x: string]: any
 }
 
-class VueAdapter implements IVueModelAdapter {
-  private readonly __Vue: IVue
-  private __vm: null | { $watch: Function; _data: any }
+// eslint-disable-next-line @typescript-eslint/no-invalid-void-type
+function forEach<T> (arr: T[], fn: (value: T, index: number, self: T[]) => void | 'break'): void {
+  for (let i = 0; i < arr.length; i++) {
+    const shouldBreak = fn(arr[i], i, arr)
+    if (shouldBreak === 'break') {
+      break
+    }
+  }
+}
+
+class VueAdapter implements IVueAdapter {
+  private readonly __Vue: IVueImpl
+  private __vm: null | { $watch: WatchFunction; _data: IObservedData<any> }
 
   public getters: any = Object.create(null)
 
-  public constructor (Vue: IVue) {
+  public constructor (Vue: IVueImpl) {
     this.__Vue = Vue
     this.__vm = null
   }
 
-  public createState<T extends object> (target: { $$state: T }, getters?: GettersTree<T>): any {
+  public createState<T extends object> (target: IObservedData<T>, getters?: IGettersTree<T>): IObservedData<T> {
     if (typeof this.__Vue.reactive === 'function') {
-      const proxy: { $$state: T } = this.__Vue.reactive(target)
+      const proxy: IObservedData<T> = this.__Vue.reactive(target)
       if (getters) {
-        const getterKeys = Object.keys(getters)
-        for (let i = 0; i < getterKeys.length; i++) {
-          const key = getterKeys[i]
+        forEach(Object.keys(getters), (key) => {
           const computed = this.__Vue.computed!(() => getters[key](proxy.$$state))
           Object.defineProperty(this.getters, key, {
             get: () => computed.value,
             enumerable: true
           })
-        }
+        })
       }
       return proxy
     }
     const computed: any = {}
 
     if (getters) {
-      const getterKeys = Object.keys(getters)
-      for (let i = 0; i < getterKeys.length; i++) {
-        const key = getterKeys[i]
-        computed[key] = (function () {
-          return function (this: { _data: { $$state: T } }) {
-            return getters[key](this._data.$$state)
-          }
-        })()
+      forEach(Object.keys(getters), (key) => {
+        computed[key] = function (this: { _data: IObservedData<T> }) {
+          return getters[key](this._data.$$state)
+        }
         Object.defineProperty(this.getters, key, {
-          get: () => {
-            return (this.__vm as any)[key]
-          },
+          get: () => (this.__vm as any)[key],
           enumerable: true
         })
-      }
+      })
     }
 
     const VueExtended = this.__Vue.extend!({
@@ -95,7 +104,7 @@ class VueAdapter implements IVueModelAdapter {
     return this.__vm._data
   }
 
-  public watch<T extends object>(source: T, cb: (value: T, ...args: any[]) => any, options?: {
+  public watch<T>(source: T | (() => T), cb: (value: T, ...args: any[]) => any, options?: {
     immediate?: boolean
     deep?: boolean
     [x: string]: any
@@ -108,58 +117,52 @@ class VueAdapter implements IVueModelAdapter {
   }
 }
 
-// function partial<T> (fn: (arg: T) => any, arg: T): () => any {
-//   return function () {
-//     return fn(arg)
-//   }
-// }
-
 /** @public */
-export interface VueModelOptions<S extends object, G extends GettersTree<S>> {
+export interface IVueModelOptions<S extends object, G extends IGettersTree<S>> {
   state: S
   getters?: G
 }
 
 /** @public */
-export class VueModel<S extends object, G extends GettersTree<S>> implements IVueModel<S, G> {
-  public static extend (Vue: IVue): new<S extends object, G extends GettersTree<S>> (options: VueModelOptions<S, G>) => IVueModel<S, G> {
-    return class <S extends object, G extends GettersTree<S>> extends VueModel<S, G> {
-      public constructor (options: VueModelOptions<S, G>) {
+export class VueModel<S extends object, G extends IGettersTree<S>> implements IVueModel<S, G> {
+  public static extend (Vue: IVueImpl): new<S extends object, G extends IGettersTree<S>> (options: IVueModelOptions<S, G>) => IVueModel<S, G> {
+    return class <S extends object, G extends IGettersTree<S>> extends VueModel<S, G> {
+      public constructor (options: IVueModelOptions<S, G>) {
         super(Vue, options)
       }
     }
   }
 
-  public static create<S extends object, G extends GettersTree<S>> (Vue: IVue, options: VueModelOptions<S, G>): VueModel<S, G> {
+  public static create<S extends object, G extends IGettersTree<S>> (Vue: IVueImpl, options: IVueModelOptions<S, G>): VueModel<S, G> {
     return new VueModel(Vue, options)
   }
 
-  protected _state: { $$state: S }
+  private readonly __data: { $$state: S }
 
   private readonly __subscribers: Array<Subscriber<S>>
 
   // @ts-expect-error
   private __watchStopHandle: null | (() => void)
 
-  private readonly __adapter: IVueModelAdapter
+  private readonly __adapter: IVueAdapter
 
-  public constructor (Vue: IVue, options: VueModelOptions<S, G>) {
+  public constructor (Vue: IVueImpl, options: IVueModelOptions<S, G>) {
     const { state, getters } = options
     this.__adapter = new VueAdapter(Vue)
-    this._state = this.__adapter.createState({ $$state: state }, getters)
+    this.__data = this.__adapter.createState({ $$state: state }, getters)
     this.__subscribers = []
     this.__watchStopHandle = null
   }
 
   public get state (): S {
-    return this._state.$$state
+    return this.__data.$$state
   }
 
   public get getters (): { [K in keyof G]: ReturnType<G[K]> } {
     return this.__adapter.getters
   }
 
-  public subscribe (fn: Subscriber<S>, options?: SubscribeOptions): () => void {
+  public subscribe (fn: Subscriber<S>, options?: ISubscribeOptions): () => void {
     const oldLength = this.__subscribers.length
     // eslint-disable-next-line @typescript-eslint/prefer-includes
     if (this.__subscribers.indexOf(fn) < 0) {
@@ -169,8 +172,8 @@ export class VueModel<S extends object, G extends GettersTree<S>> implements IVu
         this.__subscribers.push(fn)
       }
       if (oldLength === 0) {
-        this.__watchStopHandle = this.__adapter.watch(() => this._state.$$state, (value) => {
-          this.__subscribers.slice().forEach(sub => { sub(value as S) })
+        this.__watchStopHandle = this.__adapter.watch(() => this.__data.$$state, (value) => {
+          this.__subscribers.slice().forEach(sub => { sub(value) })
         }, {
           deep: true
         })

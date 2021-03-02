@@ -14,15 +14,16 @@
 
 |  Interface | Description |
 |  --- | --- |
-|  [GettersTree](./vuemodel.getterstree.md) |  |
-|  [IVue](./vuemodel.ivue.md) |  |
+|  [IGettersTree](./vuemodel.igetterstree.md) |  |
+|  [ISubscribeOptions](./vuemodel.isubscribeoptions.md) |  |
+|  [IVueImpl](./vuemodel.ivueimpl.md) |  |
 |  [IVueModel](./vuemodel.ivuemodel.md) |  |
-|  [SubscribeOptions](./vuemodel.subscribeoptions.md) |  |
-|  [VueModelOptions](./vuemodel.vuemodeloptions.md) |  |
+|  [IVueModelOptions](./vuemodel.ivuemodeloptions.md) |  |
 
 ## Type Aliases
 
 |  Type Alias | Description |
 |  --- | --- |
 |  [Subscriber](./vuemodel.subscriber.md) |  |
+|  [WatchFunction](./vuemodel.watchfunction.md) |  |
 

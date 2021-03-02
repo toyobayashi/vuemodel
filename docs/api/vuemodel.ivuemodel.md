@@ -8,7 +8,7 @@
 <b>Signature:</b>
 
 ```typescript
-export interface IVueModel<S extends object, G extends GettersTree<S>> 
+export interface IVueModel<S extends object, G extends IGettersTree<S>> 
 ```
 
 ## Properties

@@ -7,7 +7,7 @@
 <b>Signature:</b>
 
 ```typescript
-subscribe(fn: Subscriber<S>, options?: SubscribeOptions): () => void;
+subscribe(fn: Subscriber<S>, options?: ISubscribeOptions): () => void;
 ```
 
 ## Parameters
@@ -15,7 +15,7 @@ subscribe(fn: Subscriber<S>, options?: SubscribeOptions): () => void;
 |  Parameter | Type | Description |
 |  --- | --- | --- |
 |  fn | [Subscriber](./vuemodel.subscriber.md)<!-- -->&lt;S&gt; |  |
-|  options | [SubscribeOptions](./vuemodel.subscribeoptions.md) |  |
+|  options | [ISubscribeOptions](./vuemodel.isubscribeoptions.md) |  |
 
 <b>Returns:</b>
 

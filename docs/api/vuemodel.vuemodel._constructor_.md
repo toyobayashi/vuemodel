@@ -9,13 +9,13 @@ Constructs a new instance of the `VueModel` class
 <b>Signature:</b>
 
 ```typescript
-constructor(Vue: IVue, options: VueModelOptions<S, G>);
+constructor(Vue: IVueImpl, options: IVueModelOptions<S, G>);
 ```
 
 ## Parameters
 
 |  Parameter | Type | Description |
 |  --- | --- | --- |
-|  Vue | [IVue](./vuemodel.ivue.md) |  |
-|  options | [VueModelOptions](./vuemodel.vuemodeloptions.md)<!-- -->&lt;S, G&gt; |  |
+|  Vue | [IVueImpl](./vuemodel.ivueimpl.md) |  |
+|  options | [IVueModelOptions](./vuemodel.ivuemodeloptions.md)<!-- -->&lt;S, G&gt; |  |
 

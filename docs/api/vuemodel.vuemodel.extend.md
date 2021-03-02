@@ -7,16 +7,16 @@
 <b>Signature:</b>
 
 ```typescript
-static extend(Vue: IVue): new <S extends object, G extends GettersTree<S>>(options: VueModelOptions<S, G>) => IVueModel<S, G>;
+static extend(Vue: IVueImpl): new <S extends object, G extends IGettersTree<S>>(options: IVueModelOptions<S, G>) => IVueModel<S, G>;
 ```
 
 ## Parameters
 
 |  Parameter | Type | Description |
 |  --- | --- | --- |
-|  Vue | [IVue](./vuemodel.ivue.md) |  |
+|  Vue | [IVueImpl](./vuemodel.ivueimpl.md) |  |
 
 <b>Returns:</b>
 
-new &lt;S extends object, G extends [GettersTree](./vuemodel.getterstree.md)<!-- -->&lt;S&gt;&gt;(options: [VueModelOptions](./vuemodel.vuemodeloptions.md)<!-- -->&lt;S, G&gt;) =&gt; [IVueModel](./vuemodel.ivuemodel.md)<!-- -->&lt;S, G&gt;
+new &lt;S extends object, G extends [IGettersTree](./vuemodel.igetterstree.md)<!-- -->&lt;S&gt;&gt;(options: [IVueModelOptions](./vuemodel.ivuemodeloptions.md)<!-- -->&lt;S, G&gt;) =&gt; [IVueModel](./vuemodel.ivuemodel.md)<!-- -->&lt;S, G&gt;
 

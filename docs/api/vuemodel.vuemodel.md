@@ -8,7 +8,7 @@
 <b>Signature:</b>
 
 ```typescript
-export declare class VueModel<S extends object, G extends GettersTree<S>> implements IVueModel<S, G> 
+export declare class VueModel<S extends object, G extends IGettersTree<S>> implements IVueModel<S, G> 
 ```
 <b>Implements:</b> [IVueModel](./vuemodel.ivuemodel.md)<!-- -->&lt;S, G&gt;
 
@@ -22,7 +22,6 @@ export declare class VueModel<S extends object, G extends GettersTree<S>> implem
 
 |  Property | Modifiers | Type | Description |
 |  --- | --- | --- | --- |
-|  [\_state](./vuemodel.vuemodel._state.md) |  | { $$state: S; } |  |
 |  [getters](./vuemodel.vuemodel.getters.md) |  | { \[K in keyof G\]: ReturnType&lt;G\[K\]&gt;; } |  |
 |  [state](./vuemodel.vuemodel.state.md) |  | S |  |
 
