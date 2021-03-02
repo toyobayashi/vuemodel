@@ -6,6 +6,18 @@ Support Vue 2, Vue 3, even React!
 
 [API Documentation](https://github.com/toyobayashi/vuemodel/blob/main/docs/api/index.md)
 
+## Why use this
+
+* You do not need Vuex but only want global state management
+
+* You think Vuex is not friendly to TypeScript's type inference and IDE reference jumping
+
+* You are tired of committing mutations and dispatching actions
+
+* You are using React and [@tybys/reactivuety](https://github.com/toyobayashi/reactivuety/)
+
+* ~~You want to create another Vuex~~
+
 ## Usage
 
 ### Basic
@@ -56,7 +68,7 @@ const model = VueModel.create(Vue, {
 // or
 // const model = new VueModel(Vue, { ... })
 
-Vue.createApp(Vue.defineComponent({
+const Component = Vue.defineComponent({
   setup () {
     const onClick = () => { model.state.a.count++ }
     return () => (
@@ -66,7 +78,7 @@ Vue.createApp(Vue.defineComponent({
       </>
     )
   }
-})).mount('#app')
+})
 ```
 
 ### Bind Vue implementation
@@ -92,7 +104,7 @@ const model = Model.create({
 // const model = new Model({ ... })
 ```
 
-### Use class
+### Implement interface
 
 Better type inference support than Vuex!
 
@@ -137,8 +149,8 @@ class Store implements IVueModel<State, any> {
     return this.state.a.count
   }
 
-  public get computedCount () { // <- number worked
-    return this.getters.computedCount
+  public get computedCount () { 
+    return this.getters.computedCount // infer => number
   }
 
   // like action
@@ -184,8 +196,8 @@ class Store extends VueModel<State, typeof getters> {
     return this.state.a.count
   }
 
-  public get computedCount () { // <- number worked
-    return this.getters.computedCount
+  public get computedCount () {
+    return this.getters.computedCount // infer => number
   }
 
   // like action
