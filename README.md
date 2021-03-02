@@ -2,9 +2,38 @@
 
 Use this if you do not want Vuex!
 
-```ts
-import * as Vue from 'vue' // Vue 3
+Support Vue 2, Vue 3, even React!
 
+[API Documentation](https://github.com/toyobayashi/vuemodel/blob/main/docs/api/index.md)
+
+## Usage
+
+### Basic
+
+Use static method `VueModel.create(Vue, { state, getters? })` to create a model and use it in template / JSX.
+
+The first argument is the implementation of Vue, or something like `IVueImpl` below:
+
+``` ts
+interface IVueImpl {
+  reactive?: <T extends object> (target: T) => T
+  computed?: (fn: () => void) => any
+  watch?: WatchFunction
+  extend?: (options: any) => new () => { $watch: WatchFunction; _data: any; [x: string]: any }
+  [x: string]: any
+}
+
+type WatchFunction = <T>(source: T | (() => T), cb: (value: T, ...args: any[]) => any, options?: {
+  immediate?: boolean
+  deep?: boolean
+  [x: string]: any
+}) => () => void
+```
+
+Example:
+
+```jsx
+import * as Vue from 'vue' // Vue 3
 // import Vue from 'vue' // Vue 2
 
 // React with @tybys/reactivuety
@@ -12,7 +41,66 @@ import * as Vue from 'vue' // Vue 3
 // import { computed, watch } from '@tybys/reactivuety'
 // const Vue = { reactive, computed, watch }
 
-import { VueModel, IVueModel, SubscribeOptions, Subscriber } from '@tybys/vuemodel'
+import { VueModel } from '@tybys/vuemodel'
+
+const model = VueModel.create(Vue, {
+  state: {
+    a: { count: 1 }
+  },
+  getters: {
+    computedCount (state) {
+      return state.a.count * 2
+    }
+  }
+})
+// or
+// const model = new VueModel(Vue, { ... })
+
+Vue.createApp(Vue.defineComponent({
+  setup () {
+    const onClick = () => { model.state.a.count++ }
+    return () => (
+      <>
+        <p>{model.state.a.count} * 2 = {model.getters.computedCount}</p>
+        <button onClick={onClick}>+</button>
+      </>
+    )
+  }
+})).mount('#app')
+```
+
+### Bind Vue implementation
+
+Use `VueModel.extend(Vue)` to create a new constructor bound a vue implementation
+
+```js
+import * as Vue from 'vue' // Vue 3
+import { VueModel } from '@tybys/vuemodel'
+
+const Model = VueModel.extend(Vue)
+const model = Model.create({
+  state: {
+    a: { count: 1 }
+  },
+  getters: {
+    computedCount (state) {
+      return state.a.count * 2
+    }
+  }
+})
+// or
+// const model = new Model({ ... })
+```
+
+### Use class
+
+Better type inference support than Vuex!
+
+```ts
+import * as Vue from 'vue' // Vue 3
+
+import { VueModel } from '@tybys/vuemodel'
+import type { IVueModel, ISubscribeOptions, Subscriber } from '@tybys/vuemodel'
 
 interface State {
   a: { count: number }
@@ -39,20 +127,68 @@ class Store implements IVueModel<State, any> {
       a: { count: 1 }
     },
     getters: {
-      computedCount (state): number {
+      computedCount (state) { // <- no return type
         return state.a.count * 2
       }
     }
   })
 
-  public get count (): number {
+  public get count () {
     return this.state.a.count
   }
 
-  public get computedCount (): number {
+  public get computedCount () { // <- number worked
     return this.getters.computedCount
   }
 
+  // like action
+  public add (): Promise<void> {
+    return Promise.resolve().then(() => {
+      this.state.a.count++
+    })
+  }
+
+  // public install (appOrVue) {
+  //   vue plugin
+  // }
+}
+```
+
+### Extended class
+
+```ts
+import * as Vue from 'vue' // Vue 3
+import { VueModel } from '@tybys/vuemodel'
+
+interface State {
+  a: { count: number }
+}
+
+const getters = {
+  computedCount (state: State) { // <- no return type
+    return state.a.count * 2
+  }
+}
+
+class Store extends VueModel<State, typeof getters> {
+  public constructor () {
+    super(Vue, {
+      state: {
+        a: { count: 1 }
+      },
+      getters: getters
+    })
+  }
+
+  public get count () {
+    return this.state.a.count
+  }
+
+  public get computedCount () { // <- number worked
+    return this.getters.computedCount
+  }
+
+  // like action
   public add (): Promise<void> {
     return Promise.resolve().then(() => {
       this.state.a.count++
