@@ -7,5 +7,5 @@
 <b>Signature:</b>
 
 ```typescript
-reactive?: <T extends object>(target: T) => T;
+reactive?: <T extends object>(target: T) => any;
 ```

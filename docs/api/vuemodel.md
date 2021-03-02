@@ -4,6 +4,8 @@
 
 ## vuemodel package
 
+Global state management for Vue and React.
+
 ## Classes
 
 |  Class | Description |
@@ -19,6 +21,12 @@
 |  [IVueImpl](./vuemodel.ivueimpl.md) |  |
 |  [IVueModel](./vuemodel.ivuemodel.md) |  |
 |  [IVueModelOptions](./vuemodel.ivuemodeloptions.md) |  |
+
+## Variables
+
+|  Variable | Description |
+|  --- | --- |
+|  [version](./vuemodel.version.md) |  |
 
 ## Type Aliases
 
