@@ -1,7 +1,7 @@
 {
   "name": "@tybys/vuemodel",
-  "version": "1.0.1",
-  "description": "",
+  "version": "1.0.2",
+  "description": "Global state management library for Vue and React",
   "jsdelivr": "./dist/vuemodel.js",
   "unpkg": "./dist/vuemodel.js",
   "typings": "./dist/vuemodel.d.ts",
@@ -20,7 +20,8 @@
     "fix": "tsgo fix"
   },
   "keywords": [
-    "vue"
+    "vue",
+    "vuex"
   ],
   "author": "toyobayashi",
   "repository": {

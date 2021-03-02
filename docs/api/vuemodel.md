@@ -4,7 +4,7 @@
 
 ## vuemodel package
 
-Global state management for Vue and React.
+Global state management library for Vue and React
 
 ## Classes
 
@@ -20,6 +20,7 @@ Global state management for Vue and React.
 |  [ISubscribeOptions](./vuemodel.isubscribeoptions.md) |  |
 |  [IVueImpl](./vuemodel.ivueimpl.md) |  |
 |  [IVueModel](./vuemodel.ivuemodel.md) |  |
+|  [IVueModelExtended](./vuemodel.ivuemodelextended.md) |  |
 |  [IVueModelOptions](./vuemodel.ivuemodeloptions.md) |  |
 
 ## Variables

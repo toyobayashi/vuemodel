@@ -8,5 +8,5 @@
 
 |  Package | Description |
 |  --- | --- |
-|  [@tybys/vuemodel](./vuemodel.md) | Global state management for Vue and React. |
+|  [@tybys/vuemodel](./vuemodel.md) | Global state management library for Vue and React |
 

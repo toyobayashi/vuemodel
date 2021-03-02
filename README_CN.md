@@ -1,32 +1,30 @@
 # vuemodel
 
-Use this if you do not want Vuex!
+不想用 Vuex？试试这个！
 
-Support Vue 2, Vue 3, even React!
+支持 Vue 2，Vue 3，甚至 React！
 
-[API Documentation](https://github.com/toyobayashi/vuemodel/blob/main/docs/api/index.md)
+[API 文档](https://github.com/toyobayashi/vuemodel/blob/main/docs/api/index.md)
 
-[中文](https://github.com/toyobayashi/vuemodel/blob/main/README_CN.md)
+## 为什么用
 
-## Why use this
+* 你不需要 Vuex 但你只需要全局状态管理
 
-* You do not need Vuex but only want global state management
+* 你认为 Vuex 对 TypeScript 的类型推导和 IDE 跳转支持不友好
 
-* You think Vuex is not friendly to TypeScript's type inference and IDE reference jumping
+* 你厌倦了提交 mutations 和分发 actions
 
-* You are tired of committing mutations and dispatching actions
+* 你在使用 React 和 [@tybys/reactivuety](https://github.com/toyobayashi/reactivuety/)
 
-* You are using React and [@tybys/reactivuety](https://github.com/toyobayashi/reactivuety/)
+* ~~你想另外造一个 Vuex~~
 
-* ~~You want to create another Vuex~~
+## 用法
 
-## Usage
+### 基本
 
-### Basic
+使用静态方法 `VueModel.create(Vue, { state, getters? })` 创建一个 model 然后直接用在模板或 JSX 里面。
 
-Use static method `VueModel.create(Vue, { state, getters? })` to create a model and use it in template / JSX.
-
-The first argument is the implementation of Vue, or something like `IVueImpl` below:
+第一个参数是 Vue 的实现，或者是类似下面 `IVueImpl` 的东西：
 
 ``` ts
 interface IVueImpl {
@@ -44,7 +42,7 @@ type WatchFunction = <T>(source: T | (() => T), cb: (value: T, ...args: any[]) =
 }) => () => void
 ```
 
-Example:
+例子:
 
 ```jsx
 import * as Vue from 'vue' // Vue 3
@@ -83,9 +81,9 @@ const Component = Vue.defineComponent({
 })
 ```
 
-### Bind Vue implementation
+### 绑定 Vue 的实现
 
-Use `VueModel.extend(Vue)` to create a new constructor bound a vue implementation
+使用 `VueModel.extend(Vue)` 创建一个已经绑定 Vue 实现的 Model 构造函数。
 
 ```js
 import * as Vue from 'vue' // Vue 3
@@ -106,9 +104,9 @@ const model = Model.create({
 // const model = new Model({ ... })
 ```
 
-### Implement interface
+### 实现接口
 
-Better type inference support than Vuex!
+比 Vuex 更棒的类型推断！
 
 ```ts
 import * as Vue from 'vue' // Vue 3
@@ -141,7 +139,7 @@ class Store implements IVueModel<State, any> {
       a: { count: 1 }
     },
     getters: {
-      computedCount (state) { // <- no return type
+      computedCount (state) { // <- 这里没有标注返回值类型
         return state.a.count * 2
       }
     }
@@ -152,7 +150,7 @@ class Store implements IVueModel<State, any> {
   }
 
   public get computedCount () { 
-    return this.getters.computedCount // infer => number
+    return this.getters.computedCount // 推导出 number
   }
 
   // like action
@@ -168,7 +166,7 @@ class Store implements IVueModel<State, any> {
 }
 ```
 
-### Extended class
+### 继承类
 
 ```ts
 import * as Vue from 'vue' // Vue 3
@@ -179,7 +177,7 @@ interface State {
 }
 
 const getters = {
-  computedCount (state: State) { // <- no return type
+  computedCount (state: State) { // <- 这里没有标注返回值类型
     return state.a.count * 2
   }
 }
@@ -199,7 +197,7 @@ class Store extends VueModel<State, typeof getters> {
   }
 
   public get computedCount () {
-    return this.getters.computedCount // infer => number
+    return this.getters.computedCount // 推导出 number
   }
 
   // like action
