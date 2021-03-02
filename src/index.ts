@@ -125,8 +125,15 @@ export interface IVueModelOptions<S extends object, G extends IGettersTree<S>> {
 
 /** @public */
 export class VueModel<S extends object, G extends IGettersTree<S>> implements IVueModel<S, G> {
-  public static extend (Vue: IVueImpl): new<S extends object, G extends IGettersTree<S>> (options: IVueModelOptions<S, G>) => IVueModel<S, G> {
-    return class <S extends object, G extends IGettersTree<S>> extends VueModel<S, G> {
+  public static extend (Vue: IVueImpl): {
+    new <S extends object, G extends IGettersTree<S>> (options: IVueModelOptions<S, G>): IVueModel<S, G>
+    create<S extends object, G extends IGettersTree<S>> (options: IVueModelOptions<S, G>): IVueModel<S, G>
+  } {
+    return class VueModelExtended<S extends object, G extends IGettersTree<S>> extends VueModel<S, G> {
+      public static create<S extends object, G extends IGettersTree<S>> (options: IVueModelOptions<S, G>): VueModelExtended<S, G> {
+        return new VueModelExtended(options)
+      }
+
       public constructor (options: IVueModelOptions<S, G>) {
         super(Vue, options)
       }

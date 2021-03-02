@@ -7,7 +7,10 @@
 <b>Signature:</b>
 
 ```typescript
-static extend(Vue: IVueImpl): new <S extends object, G extends IGettersTree<S>>(options: IVueModelOptions<S, G>) => IVueModel<S, G>;
+static extend(Vue: IVueImpl): {
+        new <S extends object, G extends IGettersTree<S>>(options: IVueModelOptions<S, G>): IVueModel<S, G>;
+        create<S extends object, G extends IGettersTree<S>>(options: IVueModelOptions<S, G>): IVueModel<S, G>;
+    };
 ```
 
 ## Parameters
@@ -18,5 +21,5 @@ static extend(Vue: IVueImpl): new <S extends object, G extends IGettersTree<S>>(
 
 <b>Returns:</b>
 
-new &lt;S extends object, G extends [IGettersTree](./vuemodel.igetterstree.md)<!-- -->&lt;S&gt;&gt;(options: [IVueModelOptions](./vuemodel.ivuemodeloptions.md)<!-- -->&lt;S, G&gt;) =&gt; [IVueModel](./vuemodel.ivuemodel.md)<!-- -->&lt;S, G&gt;
+{ new &lt;S extends object, G extends [IGettersTree](./vuemodel.igetterstree.md)<!-- -->&lt;S&gt;&gt;(options: [IVueModelOptions](./vuemodel.ivuemodeloptions.md)<!-- -->&lt;S, G&gt;): [IVueModel](./vuemodel.ivuemodel.md)<!-- -->&lt;S, G&gt;; create&lt;S extends object, G extends [IGettersTree](./vuemodel.igetterstree.md)<!-- -->&lt;S&gt;&gt;(options: [IVueModelOptions](./vuemodel.ivuemodeloptions.md)<!-- -->&lt;S, G&gt;): [IVueModel](./vuemodel.ivuemodel.md)<!-- -->&lt;S, G&gt;; }
 
