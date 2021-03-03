@@ -1,21 +1,23 @@
 (() => {
+  Vue.use(store)
+
   const A = Vue.extend({
     render (h) {
-      return h('div', null, [store.count])
+      return h('div', null, [this.$store.count])
     }
   })
 
   const B = Vue.extend({
     render (h) {
-      return h('div', null, [store.computedCount])
+      return h('div', null, [this.$store.computedCount])
     }
   })
 
-  new Vue({
-    render: (h) => {
+  const vm = new Vue({
+    render (h) {
       return h('div', { attrs: { id: 'app' } }, [
-        h('button', { ref: 'button', on: { click () {
-          store.add()
+        h('button', { ref: 'button', on: { click: () => {
+          this.$store.add()
         } } }, ['+']),
         h(A), h(B)
       ])
@@ -28,5 +30,7 @@
       }
       console.timeEnd() */
     }
-  }).$mount('#app')
+  })
+  vm.$mount('#app')
+  console.log(vm.$store === store)
 })()

@@ -42,6 +42,10 @@ class Store {
       console.log(r)
     })
   }
+
+  install (app, ...options) {
+    return this.__model.install.call(this, app, ...options)
+  }
 }
 
 const store = new Store()

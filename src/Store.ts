@@ -19,6 +19,8 @@ export interface IStore<S extends object, G extends IGettersTree<S>> extends IVu
 
   registerAction<R> (name: string, handler: () => R | Promise<R>): IAction<void, R>
   registerAction<P, R> (name: string, handler: (payload: P) => R | Promise<R>): IAction<P, R>
+
+  install (appOrVue: any): any
 }
 
 /** @public */
@@ -224,6 +226,16 @@ export class Store<S extends object, G extends IGettersTree<S>> extends VueModel
         reject(error)
       })
     })
+  }
+
+  public install (appOrVue: any): any {
+    if (appOrVue?.version) {
+      if (Number(appOrVue.version.charAt(0)) > 2) {
+        appOrVue.config.globalProperties.$store = this
+      } else {
+        appOrVue.prototype.$store = this
+      }
+    }
   }
 }
 

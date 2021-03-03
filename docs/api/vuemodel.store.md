@@ -36,6 +36,7 @@ export declare class Store<S extends object, G extends IGettersTree<S>> extends 
 |  [dispatch(action, payload)](./vuemodel.store.dispatch_1.md) | <code>static</code> |  |
 |  [dispatch(action, payload)](./vuemodel.store.dispatch_2.md) | <code>static</code> |  |
 |  [extend(Vue)](./vuemodel.store.extend.md) | <code>static</code> |  |
+|  [install(appOrVue)](./vuemodel.store.install.md) |  |  |
 |  [registerAction(name, handler)](./vuemodel.store.registeraction.md) |  |  |
 |  [registerAction(name, handler)](./vuemodel.store.registeraction_1.md) |  |  |
 |  [registerAction(name, handler)](./vuemodel.store.registeraction.md) | <code>static</code> |  |

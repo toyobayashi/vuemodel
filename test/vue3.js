@@ -11,7 +11,7 @@
     }
   })
 
-  Vue.createApp(Vue.defineComponent({
+  const app = Vue.createApp(Vue.defineComponent({
     setup () {
       const h = Vue.h
 
@@ -32,6 +32,11 @@
         } }, ['+']),
         h(A), h(B)
       ])
+    },
+    mounted () {
+      console.log(this.$store === store)
     }
-  })).mount('#app')
+  }))
+  app.use(store)
+  app.mount('#app')
 })()

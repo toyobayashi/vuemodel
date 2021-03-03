@@ -21,6 +21,7 @@ export interface IStore<S extends object, G extends IGettersTree<S>> extends IVu
 |  [dispatch(action)](./vuemodel.istore.dispatch.md) |  |
 |  [dispatch(action, payload)](./vuemodel.istore.dispatch_1.md) |  |
 |  [dispatch(action, payload)](./vuemodel.istore.dispatch_2.md) |  |
+|  [install(appOrVue)](./vuemodel.istore.install.md) |  |
 |  [registerAction(name, handler)](./vuemodel.istore.registeraction.md) |  |
 |  [registerAction(name, handler)](./vuemodel.istore.registeraction_1.md) |  |
 |  [registerMutation(name, handler)](./vuemodel.istore.registermutation.md) |  |
