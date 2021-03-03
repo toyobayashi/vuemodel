@@ -18,9 +18,3 @@ export interface IVueModel<S extends object, G extends IGettersTree<S>>
 |  [getters](./vuemodel.ivuemodel.getters.md) | { \[K in keyof G\]: ReturnType&lt;G\[K\]&gt;; } |  |
 |  [state](./vuemodel.ivuemodel.state.md) | S |  |
 
-## Methods
-
-|  Method | Description |
-|  --- | --- |
-|  [subscribe(fn, options)](./vuemodel.ivuemodel.subscribe.md) |  |
-

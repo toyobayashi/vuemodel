@@ -31,5 +31,4 @@ export declare class VueModel<S extends object, G extends IGettersTree<S>> imple
 |  --- | --- | --- |
 |  [create(Vue, options)](./vuemodel.vuemodel.create.md) | <code>static</code> |  |
 |  [extend(Vue)](./vuemodel.vuemodel.extend.md) | <code>static</code> |  |
-|  [subscribe(fn, options)](./vuemodel.vuemodel.subscribe.md) |  |  |
 

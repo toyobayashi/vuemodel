@@ -28,18 +28,11 @@
 
 ``` ts
 interface IVueImpl {
-  reactive?: <T extends object> (target: T) => T
+  reactive?: <T extends object> (target: T) => any
   computed?: (fn: () => void) => any
-  watch?: WatchFunction
-  extend?: (options: any) => new () => { $watch: WatchFunction; _data: any; [x: string]: any }
+  extend?: (options: any) => new () => { _data: any; [x: string]: any }
   [x: string]: any
 }
-
-type WatchFunction = <T>(source: T | (() => T), cb: (value: T, ...args: any[]) => any, options?: {
-  immediate?: boolean
-  deep?: boolean
-  [x: string]: any
-}) => () => void
 ```
 
 例子:
@@ -50,8 +43,8 @@ import * as Vue from 'vue' // Vue 3
 
 // React with @tybys/reactivuety
 // import { reactive } from '@vue/reactivity'
-// import { computed, watch } from '@tybys/reactivuety'
-// const Vue = { reactive, computed, watch }
+// import { computed } from '@tybys/reactivuety'
+// const Vue = { reactive, computed }
 
 import { VueModel } from '@tybys/vuemodel'
 
@@ -118,7 +111,7 @@ interface State {
   a: { count: number }
 }
 
-class Store implements IVueModel<State, any> {
+class MyStore implements IVueModel<State, any> {
   // @override
   public get state () {
     return this.__model.state
@@ -127,11 +120,6 @@ class Store implements IVueModel<State, any> {
   // @override
   public get getters () {
     return this.__model.getters
-  }
-
-  // @override
-  public subscribe(fn: Subscriber<State>, options?: SubscribeOptions): () => void {
-    return this.__model.subscribe(fn, options)
   }
 
   private __model = VueModel.create(Vue, {
@@ -153,7 +141,7 @@ class Store implements IVueModel<State, any> {
     return this.getters.computedCount // 推导出 number
   }
 
-  // like action
+  // 类似 action
   public add (): Promise<void> {
     return Promise.resolve().then(() => {
       this.state.a.count++
@@ -182,7 +170,7 @@ const getters = {
   }
 }
 
-class Store extends VueModel<State, typeof getters> {
+class MyStore extends VueModel<State, typeof getters> {
   public constructor () {
     super(Vue, {
       state: {
@@ -200,15 +188,51 @@ class Store extends VueModel<State, typeof getters> {
     return this.getters.computedCount // 推导出 number
   }
 
-  // like action
+  // 类似 action
   public add (): Promise<void> {
     return Promise.resolve().then(() => {
       this.state.a.count++
     })
   }
+}
+```
 
-  // public install (appOrVue) {
-  //   vue plugin
-  // }
+### Mutations and actions
+
+如果你更喜欢 Vuex 的模式，你可以调用 `Store.prototype.registerMutation` 或 `Store.prototype.registerAction` 成员方法然后把返回值传入 `Store.prototype.commit` 或 `Store.prototype.dispatch`。
+
+```ts
+import * as Vue from 'vue' // Vue 3
+import { Store } from '@tybys/vuemodel'
+import type { IMutation, IAction } from '@tybys/vuemodel'
+
+interface State {
+  a: { count: number }
+}
+
+// class Store extends VueModel
+class MyStore extends Store<State, {}> {
+  private __addMutation: IMutation<number>
+  private __addAction: IAction<number, void>
+  public constructor () {
+    super(Vue, {
+      state: {
+        a: { count: 1 }
+      }
+    })
+
+    this.__addMutation = this.registerMutation<number>('m_add', (payload: number): void => {
+      this.state.a.count += payload
+    })
+
+    this.__addAction = this.registerAction<number, void>('a_add', (payload: number): void | Promise<void> => {
+      this.commit(this.__addMutation, payload)
+      // return Promise.resolve()
+    })
+  }
+
+  public add (): Promise<void> {
+    return this.dispatch(this.__addAction, 1)
+  }
 }
 ```

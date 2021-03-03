@@ -10,14 +10,20 @@ Global state management library for Vue and React
 
 |  Class | Description |
 |  --- | --- |
+|  [Store](./vuemodel.store.md) |  |
 |  [VueModel](./vuemodel.vuemodel.md) |  |
 
 ## Interfaces
 
 |  Interface | Description |
 |  --- | --- |
+|  [IAction](./vuemodel.iaction.md) |  |
 |  [IGettersTree](./vuemodel.igetterstree.md) |  |
+|  [IMutation](./vuemodel.imutation.md) |  |
+|  [IStore](./vuemodel.istore.md) |  |
+|  [IStoreExtended](./vuemodel.istoreextended.md) |  |
 |  [ISubscribeOptions](./vuemodel.isubscribeoptions.md) |  |
+|  [ISubscriberEvent](./vuemodel.isubscriberevent.md) |  |
 |  [IVueImpl](./vuemodel.ivueimpl.md) |  |
 |  [IVueModel](./vuemodel.ivuemodel.md) |  |
 |  [IVueModelExtended](./vuemodel.ivuemodelextended.md) |  |
@@ -33,6 +39,6 @@ Global state management library for Vue and React
 
 |  Type Alias | Description |
 |  --- | --- |
+|  [PayloadType](./vuemodel.payloadtype.md) |  |
 |  [Subscriber](./vuemodel.subscriber.md) |  |
-|  [WatchFunction](./vuemodel.watchfunction.md) |  |
 

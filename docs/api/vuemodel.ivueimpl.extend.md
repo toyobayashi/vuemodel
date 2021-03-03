@@ -8,7 +8,6 @@
 
 ```typescript
 extend?: (options: any) => new () => {
-        $watch: WatchFunction;
         _data: any;
         [x: string]: any;
     };

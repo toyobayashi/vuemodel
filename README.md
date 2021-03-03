@@ -30,18 +30,11 @@ The first argument is the implementation of Vue, or something like `IVueImpl` be
 
 ``` ts
 interface IVueImpl {
-  reactive?: <T extends object> (target: T) => T
+  reactive?: <T extends object> (target: T) => any
   computed?: (fn: () => void) => any
-  watch?: WatchFunction
-  extend?: (options: any) => new () => { $watch: WatchFunction; _data: any; [x: string]: any }
+  extend?: (options: any) => new () => { _data: any; [x: string]: any }
   [x: string]: any
 }
-
-type WatchFunction = <T>(source: T | (() => T), cb: (value: T, ...args: any[]) => any, options?: {
-  immediate?: boolean
-  deep?: boolean
-  [x: string]: any
-}) => () => void
 ```
 
 Example:
@@ -52,8 +45,8 @@ import * as Vue from 'vue' // Vue 3
 
 // React with @tybys/reactivuety
 // import { reactive } from '@vue/reactivity'
-// import { computed, watch } from '@tybys/reactivuety'
-// const Vue = { reactive, computed, watch }
+// import { computed } from '@tybys/reactivuety'
+// const Vue = { reactive, computed }
 
 import { VueModel } from '@tybys/vuemodel'
 
@@ -120,7 +113,7 @@ interface State {
   a: { count: number }
 }
 
-class Store implements IVueModel<State, any> {
+class MyStore implements IVueModel<State, any> {
   // @override
   public get state () {
     return this.__model.state
@@ -129,11 +122,6 @@ class Store implements IVueModel<State, any> {
   // @override
   public get getters () {
     return this.__model.getters
-  }
-
-  // @override
-  public subscribe(fn: Subscriber<State>, options?: SubscribeOptions): () => void {
-    return this.__model.subscribe(fn, options)
   }
 
   private __model = VueModel.create(Vue, {
@@ -184,7 +172,7 @@ const getters = {
   }
 }
 
-class Store extends VueModel<State, typeof getters> {
+class MyStore extends VueModel<State, typeof getters> {
   public constructor () {
     super(Vue, {
       state: {
@@ -208,9 +196,45 @@ class Store extends VueModel<State, typeof getters> {
       this.state.a.count++
     })
   }
+}
+```
 
-  // public install (appOrVue) {
-  //   vue plugin
-  // }
+### Mutations and actions
+
+If you prefer Vuex's pattern, you can call `Store.prototype.registerMutation` or `Store.prototype.registerAction` member method then pass the return value to `Store.prototype.commit` or `Store.prototype.dispatch`.
+
+```ts
+import * as Vue from 'vue' // Vue 3
+import { Store } from '@tybys/vuemodel'
+import type { IMutation, IAction } from '@tybys/vuemodel'
+
+interface State {
+  a: { count: number }
+}
+
+// class Store extends VueModel
+class MyStore extends Store<State, {}> {
+  private __addMutation: IMutation<number>
+  private __addAction: IAction<number, void>
+  public constructor () {
+    super(Vue, {
+      state: {
+        a: { count: 1 }
+      }
+    })
+
+    this.__addMutation = this.registerMutation<number>('m_add', (payload: number): void => {
+      this.state.a.count += payload
+    })
+
+    this.__addAction = this.registerAction<number, void>('a_add', (payload: number): void | Promise<void> => {
+      this.commit(this.__addMutation, payload)
+      // return Promise.resolve()
+    })
+  }
+
+  public add (): Promise<void> {
+    return this.dispatch(this.__addAction, 1)
+  }
 }
 ```

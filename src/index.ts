@@ -6,6 +6,7 @@
 
 export * from './types'
 export * from './VueModel'
+export * from './Store'
 
 /** @public */
 export const version = __VERSION__

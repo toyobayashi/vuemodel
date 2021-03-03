@@ -21,12 +21,12 @@
       ])
     },
     mounted () {
-      const button = this.$refs.button
+      /* const button = this.$refs.button
       console.time()
       for (let i = 0; i < 9999; i++) {
         button.click()
       }
-      console.timeEnd()
+      console.timeEnd() */
     }
   }).$mount('#app')
 })()

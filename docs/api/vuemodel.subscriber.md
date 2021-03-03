@@ -8,5 +8,7 @@
 <b>Signature:</b>
 
 ```typescript
-export declare type Subscriber<S extends object> = (state: S) => void;
+export declare type Subscriber<S extends object> = (event: ISubscriberEvent<IAction<any, any> | IMutation<any>>, state: S, error: Error | null) => void;
 ```
+<b>References:</b> [ISubscriberEvent](./vuemodel.isubscriberevent.md)<!-- -->, [IAction](./vuemodel.iaction.md)<!-- -->, [IMutation](./vuemodel.imutation.md)
+

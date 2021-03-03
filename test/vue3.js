@@ -17,14 +17,14 @@
 
       const ref = Vue.ref(null)
 
-      Vue.onMounted(() => {
+      /* Vue.onMounted(() => {
         const button = ref.value
         console.time()
         for (let i = 0; i < 9999; i++) {
           button.click()
         }
         console.timeEnd()
-      })
+      }) */
 
       return () => h(Vue.Fragment, null, [
         h('button', { ref: ref, onClick () {

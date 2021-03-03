@@ -11,14 +11,14 @@
   const App = reactivuety.defineComponent(() => {
     const ref = reactivuety.ref(null)
 
-    reactivuety.onMounted(() => {
+    /* reactivuety.onMounted(() => {
       const button = ref.value
       console.time()
       for (let i = 0; i < 9999; i++) {
         button.click()
       }
       console.timeEnd()
-    })
+    }) */
 
     return () => h(React.Fragment, { id: 'app' }, [
       h('button', { ref: ref, onClick () {

@@ -7,12 +7,8 @@ class Store {
     return this.__model.getters
   }
 
-  subscribe(fn, options) {
-    return this.__model.subscribe(fn, options)
-  }
-
   constructor () {
-    this.__model = vuemodel.VueModel.create(Vue, {
+    this.__model = vuemodel.Store.create(Vue, {
       state: {
         a: { count: 1 }
       },
@@ -21,6 +17,15 @@ class Store {
           return state.a.count * 2
         }
       }
+    })
+
+    this.addAction = this.__model.registerAction('add', function (n) {
+      this.state.a.count += n
+      return Promise.resolve(this.state.a.count)
+    })
+
+    this.__model.subscribe((event, state) => {
+      console.log(event, state)
     })
   }
 
@@ -32,14 +37,11 @@ class Store {
     return this.getters.computedCount
   }
 
-  add () {
-    return Promise.resolve().then(() => {
-      this.state.a.count++
+  add (n = 1) {
+    return this.__model.dispatch([this.addAction, this.addAction], n).then(r => {
+      console.log(r)
     })
   }
 }
 
 const store = new Store()
-store.subscribe((state) => {
-  console.log(state)
-})

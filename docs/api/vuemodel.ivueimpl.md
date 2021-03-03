@@ -16,7 +16,6 @@ export interface IVueImpl
 |  Property | Type | Description |
 |  --- | --- | --- |
 |  [computed?](./vuemodel.ivueimpl.computed.md) | (fn: () =&gt; void) =&gt; any | <i>(Optional)</i> |
-|  [extend?](./vuemodel.ivueimpl.extend.md) | (options: any) =&gt; new () =&gt; { $watch: [WatchFunction](./vuemodel.watchfunction.md)<!-- -->; \_data: any; \[x: string\]: any; } | <i>(Optional)</i> |
+|  [extend?](./vuemodel.ivueimpl.extend.md) | (options: any) =&gt; new () =&gt; { \_data: any; \[x: string\]: any; } | <i>(Optional)</i> |
 |  [reactive?](./vuemodel.ivueimpl.reactive.md) | &lt;T extends object&gt;(target: T) =&gt; any | <i>(Optional)</i> |
-|  [watch?](./vuemodel.ivueimpl.watch.md) | [WatchFunction](./vuemodel.watchfunction.md) | <i>(Optional)</i> |
 
