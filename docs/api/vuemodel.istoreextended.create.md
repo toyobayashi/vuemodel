@@ -7,14 +7,14 @@
 <b>Signature:</b>
 
 ```typescript
-create<S extends object, G extends IGettersTree<S>>(options: IVueModelOptions<S, G>): IStore<S, G>;
+create<S extends object, G extends IGettersTree<S>>(options: IStoreOptions<S, G>): IStore<S, G>;
 ```
 
 ## Parameters
 
 |  Parameter | Type | Description |
 |  --- | --- | --- |
-|  options | [IVueModelOptions](./vuemodel.ivuemodeloptions.md)<!-- -->&lt;S, G&gt; |  |
+|  options | [IStoreOptions](./vuemodel.istoreoptions.md)<!-- -->&lt;S, G&gt; |  |
 
 <b>Returns:</b>
 

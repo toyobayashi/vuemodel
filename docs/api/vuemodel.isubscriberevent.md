@@ -17,7 +17,6 @@ export interface ISubscriberEvent<T extends IAction<any, any> | IMutation<any>>
 |  --- | --- | --- |
 |  [id](./vuemodel.isubscriberevent.id.md) | string |  |
 |  [payload](./vuemodel.isubscriberevent.payload.md) | [PayloadType](./vuemodel.payloadtype.md)<!-- -->&lt;T&gt; |  |
-|  [status](./vuemodel.isubscriberevent.status.md) | 'before' \| 'after' \| 'error' |  |
-|  [target](./vuemodel.isubscriberevent.target.md) | T \| T\[\] |  |
-|  [type](./vuemodel.isubscriberevent.type.md) | 'mutation' \| 'action' |  |
+|  [status?](./vuemodel.isubscriberevent.status.md) | 'before' \| 'after' \| 'error' | <i>(Optional)</i> |
+|  [type](./vuemodel.isubscriberevent.type.md) | string |  |
 

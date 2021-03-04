@@ -1,6 +1,6 @@
 {
   "name": "@tybys/vuemodel",
-  "version": "2.1.0",
+  "version": "3.0.0",
   "description": "Global state management library for Vue and React",
   "jsdelivr": "./dist/vuemodel.js",
   "unpkg": "./dist/vuemodel.js",

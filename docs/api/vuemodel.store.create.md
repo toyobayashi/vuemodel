@@ -7,7 +7,7 @@
 <b>Signature:</b>
 
 ```typescript
-static create<S extends object, G extends IGettersTree<S>>(Vue: IVueImpl, options: IVueModelOptions<S, G>): Store<S, G>;
+static create<S extends object, G extends IGettersTree<S>>(Vue: IVueImpl, options: IStoreOptions<S, G>): Store<S, G>;
 ```
 
 ## Parameters
@@ -15,7 +15,7 @@ static create<S extends object, G extends IGettersTree<S>>(Vue: IVueImpl, option
 |  Parameter | Type | Description |
 |  --- | --- | --- |
 |  Vue | [IVueImpl](./vuemodel.ivueimpl.md) |  |
-|  options | [IVueModelOptions](./vuemodel.ivuemodeloptions.md)<!-- -->&lt;S, G&gt; |  |
+|  options | [IStoreOptions](./vuemodel.istoreoptions.md)<!-- -->&lt;S, G&gt; |  |
 
 <b>Returns:</b>
 

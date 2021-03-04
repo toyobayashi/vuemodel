@@ -13,19 +13,29 @@ Global state management library for Vue and React
 |  [Store](./vuemodel.store.md) |  |
 |  [VueModel](./vuemodel.vuemodel.md) |  |
 
+## Functions
+
+|  Function | Description |
+|  --- | --- |
+|  [createLogger({ collapsed, filter, transformer, mutationTransformer, actionFilter, actionTransformer, logMutations, logActions, logger })](./vuemodel.createlogger.md) |  |
+
 ## Interfaces
 
 |  Interface | Description |
 |  --- | --- |
 |  [IAction](./vuemodel.iaction.md) |  |
 |  [IGettersTree](./vuemodel.igetterstree.md) |  |
+|  [ILogger](./vuemodel.ilogger.md) |  |
+|  [ILoggerOption](./vuemodel.iloggeroption.md) |  |
 |  [IMutation](./vuemodel.imutation.md) |  |
 |  [IStore](./vuemodel.istore.md) |  |
 |  [IStoreExtended](./vuemodel.istoreextended.md) |  |
+|  [IStoreOptions](./vuemodel.istoreoptions.md) |  |
 |  [ISubscribeOptions](./vuemodel.isubscribeoptions.md) |  |
 |  [ISubscriberEvent](./vuemodel.isubscriberevent.md) |  |
 |  [IVueImpl](./vuemodel.ivueimpl.md) |  |
 |  [IVueModel](./vuemodel.ivuemodel.md) |  |
+|  [IVueModelBase](./vuemodel.ivuemodelbase.md) |  |
 |  [IVueModelExtended](./vuemodel.ivuemodelextended.md) |  |
 |  [IVueModelOptions](./vuemodel.ivuemodeloptions.md) |  |
 
@@ -40,5 +50,6 @@ Global state management library for Vue and React
 |  Type Alias | Description |
 |  --- | --- |
 |  [PayloadType](./vuemodel.payloadtype.md) |  |
+|  [StorePlugin](./vuemodel.storeplugin.md) |  |
 |  [Subscriber](./vuemodel.subscriber.md) |  |
 

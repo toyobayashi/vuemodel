@@ -16,10 +16,9 @@ export type PayloadType<T> = T extends IAction<infer AP, any> ? AP : (T extends 
 /** @public */
 export interface ISubscriberEvent<T extends IAction<any, any> | IMutation<any>> {
   id: string
-  type: 'mutation' | 'action'
-  status: 'before' | 'after' | 'error'
-  target: T | T[]
   payload: PayloadType<T>
+  type: string
+  status?: 'before' | 'after' | 'error'
 }
 
 /** @public */
@@ -39,6 +38,6 @@ export interface IGettersTree<S extends object> {
 export interface IVueImpl {
   reactive?: <T extends object> (target: T) => any
   computed?: (fn: () => void) => any
-  extend?: (options: any) => new () => { _data: any; [x: string]: any }
+  extend?: (options: any) => new () => { _data: any; $destroy (): void; [x: string]: any }
   [x: string]: any
 }

@@ -9,6 +9,7 @@
 ```typescript
 extend?: (options: any) => new () => {
         _data: any;
+        $destroy(): void;
         [x: string]: any;
     };
 ```

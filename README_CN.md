@@ -30,7 +30,7 @@
 interface IVueImpl {
   reactive?: <T extends object> (target: T) => any
   computed?: (fn: () => void) => any
-  extend?: (options: any) => new () => { _data: any; [x: string]: any }
+  extend?: (options: any) => new () => { _data: any; $destroy (): void; [x: string]: any }
   [x: string]: any
 }
 ```
@@ -203,7 +203,7 @@ class MyStore extends VueModel<State, typeof getters> {
 
 ```ts
 import * as Vue from 'vue' // Vue 3
-import { Store } from '@tybys/vuemodel'
+import { Store, createLogger } from '@tybys/vuemodel'
 import type { IMutation, IAction } from '@tybys/vuemodel'
 
 interface State {
@@ -218,7 +218,10 @@ class MyStore extends Store<State, {}> {
     super(Vue, {
       state: {
         a: { count: 1 }
-      }
+      },
+      plugins: [
+        // createLogger()
+      ]
     })
 
     this.__addMutation = this.registerMutation<number>('m_add', (payload: number): void => {

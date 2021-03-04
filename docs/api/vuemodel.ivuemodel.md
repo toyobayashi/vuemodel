@@ -8,13 +8,16 @@
 <b>Signature:</b>
 
 ```typescript
-export interface IVueModel<S extends object, G extends IGettersTree<S>> 
+export interface IVueModel<S extends object, G extends IGettersTree<S>> extends Readonly<IVueModelBase<S, G>> 
 ```
+<b>Extends:</b> Readonly&lt;[IVueModelBase](./vuemodel.ivuemodelbase.md)<!-- -->&lt;S, G&gt;&gt;
 
-## Properties
+## Methods
 
-|  Property | Type | Description |
-|  --- | --- | --- |
-|  [getters](./vuemodel.ivuemodel.getters.md) | { \[K in keyof G\]: ReturnType&lt;G\[K\]&gt;; } |  |
-|  [state](./vuemodel.ivuemodel.state.md) | S |  |
+|  Method | Description |
+|  --- | --- |
+|  [hotUpdate(options)](./vuemodel.ivuemodel.hotupdate.md) |  |
+|  [replaceState(state)](./vuemodel.ivuemodel.replacestate.md) |  |
+|  [toJSON()](./vuemodel.ivuemodel.tojson.md) |  |
+|  [toString()](./vuemodel.ivuemodel.tostring.md) |  |
 

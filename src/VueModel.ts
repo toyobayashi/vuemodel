@@ -1,12 +1,20 @@
 import type { IGettersTree, IVueImpl } from './types'
-import type { IVueAdapter } from './VueAdapter'
+import { def } from './util'
 
-import { VueAdapter } from './VueAdapter'
+import { VueModelImpl } from './VueModelImpl'
 
 /** @public */
-export interface IVueModel<S extends object, G extends IGettersTree<S>> {
-  readonly state: S
-  readonly getters: { [K in keyof G]: ReturnType<G[K]> }
+export interface IVueModelBase<S extends object, G extends IGettersTree<S>> {
+  state: S
+  getters: { [K in keyof G]: ReturnType<G[K]> }
+}
+
+/** @public */
+export interface IVueModel<S extends object, G extends IGettersTree<S>> extends Readonly<IVueModelBase<S, G>> {
+  replaceState (state: S): void
+  hotUpdate (options?: { getters?: G }): void
+  toJSON (): IVueModelBase<S, G>
+  toString (): string
 }
 
 /** @public */
@@ -40,21 +48,36 @@ export class VueModel<S extends object, G extends IGettersTree<S>> implements IV
     return new VueModel(Vue, options)
   }
 
-  private readonly __data: { $$state: S }
-
-  private readonly __adapter: IVueAdapter
+  private readonly __impl!: VueModelImpl<S, G>
 
   public constructor (Vue: IVueImpl, options: IVueModelOptions<S, G>) {
-    const { state, getters } = options
-    this.__adapter = new VueAdapter(Vue)
-    this.__data = this.__adapter.createState({ $$state: state }, getters)
+    def(this, '__impl', new VueModelImpl(Vue, options.state, options.getters))
   }
 
   public get state (): S {
-    return this.__data.$$state
+    return this.__impl.data.$$state
   }
 
   public get getters (): { [K in keyof G]: ReturnType<G[K]> } {
-    return this.__adapter.getters
+    return this.__impl.getters
+  }
+
+  public replaceState (state: S): void {
+    this.__impl.data.$$state = state
+  }
+
+  public hotUpdate (options?: { getters?: G }): void {
+    if (options?.getters) {
+      this.__impl.resetState(this.state, options.getters, true)
+    }
+  }
+
+  public toJSON (): IVueModelBase<S, G> {
+    return { state: this.state, getters: this.getters }
+  }
+
+  // @override
+  public toString (): string {
+    return JSON.stringify(this.toJSON())
   }
 }

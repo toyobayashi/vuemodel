@@ -56,37 +56,59 @@ export const oid = (function () {
   return generate
 })()
 
+export function def (obj: any, name: string, value: any): void {
+  try {
+    Object.defineProperty(obj, name, {
+      configurable: true,
+      enumerable: false,
+      writable: true,
+      value: value
+    })
+  } catch (_) {
+    obj[name] = value
+  }
+}
+
 export class MutationEvent<P> implements ISubscriberEvent<IMutation<P>> {
-  public id: string
-  public status: 'after'
-  public target: ISubscriberEvent<IMutation<P>>['target']
-  public payload: P
-
   public constructor (
-    id: string,
-    target: ISubscriberEvent<IMutation<P>>['target'],
-    payload: P
-  ) {
-    this.id = id
-    this.status = 'after'
-    this.target = target
-    this.payload = payload
-  }
-
-  public get type (): 'mutation' {
-    return 'mutation'
-  }
+    public id: string,
+    public payload: P,
+    public type: string
+  ) {}
 }
 
 export class ActionEvent<P> implements ISubscriberEvent<IAction<P, any>> {
   public constructor (
     public id: string,
-    public status: ISubscriberEvent<IAction<P, any>>['status'],
-    public target: ISubscriberEvent<IAction<P, any>>['target'],
-    public payload: P
+    public payload: P,
+    public status: 'before' | 'after' | 'error',
+    public type: string
   ) {}
+}
 
-  public get type (): 'action' {
-    return 'action'
+export function deepCopy<T> (obj: T, cache: Array<{ original: T; copy: any }> = []): T {
+  // just return if obj is immutable value
+  if (obj === null || typeof obj !== 'object') {
+    return obj
   }
+
+  // if obj is hit, it is in circular structure
+  const hit = cache.filter(c => c.original === obj)[0]
+  if (hit) {
+    return hit.copy
+  }
+
+  const copy: any = Array.isArray(obj) ? [] : {}
+  // put the copy into cache at first
+  // because we want to refer it in recursive deepCopy
+  cache.push({
+    original: obj,
+    copy
+  })
+
+  Object.keys(obj).forEach(key => {
+    copy[key] = deepCopy((obj as any)[key], cache)
+  })
+
+  return copy
 }

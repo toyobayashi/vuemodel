@@ -7,5 +7,5 @@
 <b>Signature:</b>
 
 ```typescript
-status: 'before' | 'after' | 'error';
+status?: 'before' | 'after' | 'error';
 ```

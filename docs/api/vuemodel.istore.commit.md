@@ -7,14 +7,14 @@
 <b>Signature:</b>
 
 ```typescript
-commit(mutation: IMutation<void> | Array<IMutation<void>>): void;
+commit(mutation: IMutation<void>): void;
 ```
 
 ## Parameters
 
 |  Parameter | Type | Description |
 |  --- | --- | --- |
-|  mutation | [IMutation](./vuemodel.imutation.md)<!-- -->&lt;void&gt; \| Array&lt;[IMutation](./vuemodel.imutation.md)<!-- -->&lt;void&gt;&gt; |  |
+|  mutation | [IMutation](./vuemodel.imutation.md)<!-- -->&lt;void&gt; |  |
 
 <b>Returns:</b>
 

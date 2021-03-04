@@ -9,7 +9,7 @@ Constructs a new instance of the `Store` class
 <b>Signature:</b>
 
 ```typescript
-constructor(Vue: IVueImpl, options: IVueModelOptions<S, G>);
+constructor(Vue: IVueImpl, options: IStoreOptions<S, G>);
 ```
 
 ## Parameters
@@ -17,5 +17,5 @@ constructor(Vue: IVueImpl, options: IVueModelOptions<S, G>);
 |  Parameter | Type | Description |
 |  --- | --- | --- |
 |  Vue | [IVueImpl](./vuemodel.ivueimpl.md) |  |
-|  options | [IVueModelOptions](./vuemodel.ivuemodeloptions.md)<!-- -->&lt;S, G&gt; |  |
+|  options | [IStoreOptions](./vuemodel.istoreoptions.md)<!-- -->&lt;S, G&gt; |  |
 

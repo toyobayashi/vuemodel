@@ -31,4 +31,8 @@ export declare class VueModel<S extends object, G extends IGettersTree<S>> imple
 |  --- | --- | --- |
 |  [create(Vue, options)](./vuemodel.vuemodel.create.md) | <code>static</code> |  |
 |  [extend(Vue)](./vuemodel.vuemodel.extend.md) | <code>static</code> |  |
+|  [hotUpdate(options)](./vuemodel.vuemodel.hotupdate.md) |  |  |
+|  [replaceState(state)](./vuemodel.vuemodel.replacestate.md) |  |  |
+|  [toJSON()](./vuemodel.vuemodel.tojson.md) |  |  |
+|  [toString()](./vuemodel.vuemodel.tostring.md) |  |  |
 

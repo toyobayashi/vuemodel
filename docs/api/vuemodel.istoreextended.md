@@ -22,7 +22,6 @@ export interface IStoreExtended extends IVueModelExtended
 |  [create(options)](./vuemodel.istoreextended.create.md) |  |
 |  [dispatch(action)](./vuemodel.istoreextended.dispatch.md) |  |
 |  [dispatch(action, payload)](./vuemodel.istoreextended.dispatch_1.md) |  |
-|  [dispatch(action, payload)](./vuemodel.istoreextended.dispatch_2.md) |  |
 |  [extend(Vue)](./vuemodel.istoreextended.extend.md) |  |
 |  [registerAction(name, handler)](./vuemodel.istoreextended.registeraction.md) |  |
 |  [registerAction(name, handler)](./vuemodel.istoreextended.registeraction_1.md) |  |
