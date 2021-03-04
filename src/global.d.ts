@@ -4,3 +4,4 @@
 declare const __TSGO_DEV__: boolean
 declare const __TSGO_GLOBAL__: boolean
 declare const __VERSION__: string
+declare const __VUE_DEVTOOLS_GLOBAL_HOOK__: any

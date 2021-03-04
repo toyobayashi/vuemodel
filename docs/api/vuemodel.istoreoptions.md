@@ -16,5 +16,6 @@ export interface IStoreOptions<S extends object, G extends IGettersTree<S>> exte
 
 |  Property | Type | Description |
 |  --- | --- | --- |
+|  [devtools?](./vuemodel.istoreoptions.devtools.md) | boolean | <i>(Optional)</i> |
 |  [plugins?](./vuemodel.istoreoptions.plugins.md) | Array&lt;[StorePlugin](./vuemodel.storeplugin.md)<!-- -->&lt;S, G&gt;&gt; | <i>(Optional)</i> |
 

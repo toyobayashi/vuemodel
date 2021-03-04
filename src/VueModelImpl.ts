@@ -46,8 +46,8 @@ export class VueModelImpl<S extends object, G extends IGettersTree<S>> {
 
     if (getters) {
       forEach(Object.keys(getters), (key) => {
-        computed[key] = function (this: { _data: IObservedData<S> }) {
-          return getters[key](this._data.$$state)
+        computed[key] = () => {
+          return getters[key](this.__vm!._data.$$state)
         }
         Object.defineProperty(this.getters, key, {
           get: () => (this.__vm as any)[key],

@@ -1,3 +1,4 @@
+import devtoolPlugin from './plugins/devtool'
 import type { IAction, IGettersTree, IMutation, ISubscribeOptions, IVueImpl, Subscriber } from './types'
 import { ActionEvent, def, MutationEvent, oid } from './util'
 import type { IVueModel, IVueModelExtended, IVueModelOptions } from './VueModel'
@@ -27,6 +28,7 @@ export type StorePlugin<S extends object, G extends IGettersTree<S>> = (store: I
 
 /** @public */
 export interface IStoreOptions<S extends object, G extends IGettersTree<S>> extends IVueModelOptions<S, G> {
+  devtools?: boolean
   plugins?: Array<StorePlugin<S, G>>
 }
 
@@ -124,6 +126,11 @@ export class Store<S extends object, G extends IGettersTree<S>> extends VueModel
     if (options.plugins && options.plugins.length > 0) {
       options.plugins.forEach(plugin => { plugin(this) })
     }
+
+    const useDevtools = options.devtools !== undefined ? options.devtools : /* Vue.config.devtools */ true
+    if (useDevtools) {
+      devtoolPlugin(this)
+    }
   }
 
   public registerMutation (name: string, handler: (this: this) => void): IMutation<void>
@@ -212,7 +219,7 @@ export class Store<S extends object, G extends IGettersTree<S>> extends VueModel
 
   public install (appOrVue: any): any {
     if (appOrVue?.version) {
-      if (Number(appOrVue.version.charAt(0)) > 2) {
+      if (Number(appOrVue.version.split('.')[0]) > 2) {
         appOrVue.config.globalProperties.$store = this
       } else {
         appOrVue.prototype.$store = this
