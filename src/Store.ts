@@ -1,6 +1,6 @@
 import devtoolPlugin from './plugins/devtool'
 import type { IAction, IGettersTree, IMutation, ISubscribeOptions, IVueImpl, Subscriber } from './types'
-import { ActionEvent, def, MutationEvent, oid } from './util'
+import { ActionEvent, addAction, addMutation, def, MutationEvent, oid } from './util'
 import type { IVueModel, IVueModelExtended, IVueModelOptions } from './VueModel'
 import { VueModel } from './VueModel'
 
@@ -9,16 +9,20 @@ export interface IStore<S extends object, G extends IGettersTree<S>> extends IVu
   subscribe (fn: Subscriber<S>, options?: ISubscribeOptions): () => void
 
   commit (mutation: IMutation<void>): void
+  commit (mutation: string, payload?: any): void
   commit<P> (mutation: IMutation<P>, payload: P): void
 
   dispatch<R> (action: IAction<void, R>): Promise<R>
+  dispatch (action: string, payload?: any): Promise<any[]>
   dispatch<P, R> (action: IAction<P, R>, payload: P): Promise<R>
 
   registerMutation (name: string, handler: () => void): IMutation<void>
   registerMutation<P> (name: string, handler: (payload: P) => void): IMutation<P>
+  clearMutations (name?: string): void
 
   registerAction<R> (name: string, handler: () => R | Promise<R>): IAction<void, R>
   registerAction<P, R> (name: string, handler: (payload: P) => R | Promise<R>): IAction<P, R>
+  clearActions (name?: string): void
 
   install (appOrVue: any): any
 }
@@ -39,16 +43,20 @@ export interface IStoreExtended extends IVueModelExtended {
   extend (Vue: IVueImpl): IStoreExtended
 
   commit (mutation: IMutation<void>): void
+  commit (mutation: string, payload?: any): void
   commit<P> (mutation: IMutation<P>, payload: P): void
 
   dispatch<R> (action: IAction<void, R>): Promise<R>
+  dispatch (action: string, payload?: any): Promise<any[]>
   dispatch<P, R> (action: IAction<P, R>, payload: P): Promise<R>
 
   registerMutation (name: string, handler: () => void): IMutation<void>
   registerMutation<P> (name: string, handler: (payload: P) => void): IMutation<P>
+  clearMutations (name?: string): void
 
   registerAction<R> (name: string, handler: () => R | Promise<R>): IAction<void, R>
   registerAction<P, R> (name: string, handler: (payload: P) => R | Promise<R>): IAction<P, R>
+  clearActions (name?: string): void
 }
 
 /** @public */
@@ -70,64 +78,96 @@ export class Store<S extends object, G extends IGettersTree<S>> extends VueModel
   }
 
   public static commit (mutation: IMutation<void>): void
+  public static commit (mutation: string, payload?: any): void
   public static commit<P> (mutation: IMutation<P>, payload: P): void
-  public static commit (mutation: IMutation<any>, payload?: any): void {
-    if (Store.__mutations.indexOf(mutation) === -1) {
-      throw new Error(`Unknown global mutation "${mutation.name}"`)
+  public static commit (mutation: string | IMutation<any>, payload?: any): void {
+    if (typeof mutation === 'string') {
+      if (Object.prototype.hasOwnProperty.call(Store.__mutations, mutation)) {
+        Store.__mutations[mutation].slice().forEach(m => { m(payload) })
+      } else {
+        throw new Error(`Unknown mutation "${mutation}"`)
+      }
+    } else {
+      if (mutation.isDisposed()) throw new Error(`Disposed mutation "${mutation.type}"`)
+      if (Object.prototype.hasOwnProperty.call(Store.__mutations, mutation.type) && Store.__mutations[mutation.type].indexOf(mutation) !== -1) {
+        mutation(payload)
+      } else {
+        throw new Error(`Unknown mutation "${mutation.type}"`)
+      }
     }
-    mutation.onCommit(payload)
   }
 
   public static dispatch<R> (action: IAction<void, R>): Promise<R>
+  public static dispatch (action: string, payload?: any): Promise<any[]>
   public static dispatch<P, R> (action: IAction<P, R>, payload: P): Promise<R>
-  public static dispatch<R> (action: IAction<any, R>, payload?: any): Promise<R> {
-    if (Store.__actions.indexOf(action) === -1) {
-      throw new Error(`Unknown global action "${action.name}"`)
+  public static dispatch (action: string | IAction<any, any>, payload?: any): Promise<any> {
+    if (typeof action === 'string') {
+      if (Object.prototype.hasOwnProperty.call(Store.__actions, action)) {
+        return Promise.all(Store.__actions[action].slice().map(a => Promise.resolve(a(payload))))
+      } else {
+        throw new Error(`Unknown action "${action}"`)
+      }
+    } else {
+      if (action.isDisposed()) throw new Error(`Disposed action "${action.type}"`)
+      if (Object.prototype.hasOwnProperty.call(Store.__actions, action.type) && Store.__actions[action.type].indexOf(action) !== -1) {
+        return action(payload)
+      } else {
+        throw new Error(`Unknown action "${action.type}"`)
+      }
     }
-    return Promise.resolve(action.onDispatch(payload))
   }
 
-  private static readonly __mutations: Array<IMutation<any>> = []
-  private static readonly __actions: Array<IAction<any, any>> = []
+  private static readonly __mutations: Record<string, Array<IMutation<any>>> = Object.create(null)
+  private static readonly __actions: Record<string, Array<IAction<any, any>>> = Object.create(null)
 
   public static registerMutation (name: string, handler: (this: void) => void): IMutation<void>
   public static registerMutation<P> (name: string, handler: (this: void, payload: P) => void): IMutation<P>
   public static registerMutation (name: string, handler: (this: void, payload?: any) => void): IMutation<any> {
-    if (Store.__mutations.filter(m => m.name === name).length !== 0) {
-      throw new Error(`Global mutation "${name}" has been registered`)
+    return addMutation(Store.__mutations, name, handler)
+  }
+
+  public static clearMutations (name?: string): void {
+    if (name) {
+      if (Store.__mutations[name]) {
+        Store.__mutations[name].slice().forEach(m => { m.dispose() })
+      }
+    } else {
+      Object.keys(Store.__mutations).forEach(n => { Store.clearMutations(n) })
     }
-    const mutation: IMutation<any> = { name, onCommit: (payload) => handler(payload) }
-    Store.__mutations.push(mutation)
-    return mutation
   }
 
   public static registerAction<R> (name: string, handler: (this: void) => R | Promise<R>): IAction<void, R>
   public static registerAction<P, R> (name: string, handler: (this: void, payload: P) => R | Promise<R>): IAction<P, R>
   public static registerAction<R> (name: string, handler: (this: void, payload?: any) => R | Promise<R>): IAction<any, R> {
-    if (Store.__actions.filter(a => a.name === name).length !== 0) {
-      throw new Error(`Global action "${name}" has been registered`)
+    return addAction(Store.__actions, name, handler)
+  }
+
+  public static clearActions (name?: string): void {
+    if (name) {
+      if (Store.__actions[name]) {
+        Store.__actions[name].slice().forEach(a => { a.dispose() })
+      }
+    } else {
+      Object.keys(Store.__actions).forEach(n => { Store.clearActions(n) })
     }
-    const action: IAction<any, R> = { name, onDispatch: (payload) => handler(payload) }
-    Store.__actions.push(action)
-    return action
   }
 
   private readonly __subscribers!: Array<Subscriber<S>>
 
-  private readonly __mutations!: Array<IMutation<any>>
-  private readonly __actions!: Array<IAction<any, any>>
+  private readonly __mutations!: Record<string, Array<IMutation<any>>>
+  private readonly __actions!: Record<string, Array<IAction<any, any>>>
 
   public constructor (Vue: IVueImpl, options: IStoreOptions<S, G>) {
     super(Vue, options)
     def(this, '__subscribers', [])
-    def(this, '__mutations', [])
-    def(this, '__actions', [])
+    def(this, '__mutations', Object.create(null))
+    def(this, '__actions', Object.create(null))
 
     if (options.plugins && options.plugins.length > 0) {
       options.plugins.forEach(plugin => { plugin(this) })
     }
 
-    const useDevtools = options.devtools !== undefined ? options.devtools : /* Vue.config.devtools */ true
+    const useDevtools = options.devtools !== undefined ? (!!options.devtools) : false
     if (useDevtools) {
       devtoolPlugin(this)
     }
@@ -136,23 +176,33 @@ export class Store<S extends object, G extends IGettersTree<S>> extends VueModel
   public registerMutation (name: string, handler: (this: this) => void): IMutation<void>
   public registerMutation<P> (name: string, handler: (this: this, payload: P) => void): IMutation<P>
   public registerMutation (name: string, handler: (this: this, payload?: any) => void): IMutation<any> {
-    if (this.__mutations.filter(m => m.name === name).length !== 0) {
-      throw new Error(`Mutation "${name}" has been registered`)
+    return addMutation(this.__mutations, name, handler, this)
+  }
+
+  public clearMutations (name?: string): void {
+    if (name) {
+      if (this.__mutations[name]) {
+        this.__mutations[name].slice().forEach(m => { m.dispose() })
+      }
+    } else {
+      Object.keys(this.__mutations).forEach(n => { this.clearMutations(n) })
     }
-    const mutation: IMutation<any> = { name, onCommit: (payload) => handler.call(this, payload) }
-    this.__mutations.push(mutation)
-    return mutation
   }
 
   public registerAction<R> (name: string, handler: (this: this) => R | Promise<R>): IAction<void, R>
   public registerAction<P, R> (name: string, handler: (this: this, payload: P) => R | Promise<R>): IAction<P, R>
   public registerAction<R> (name: string, handler: (this: this, payload?: any) => R | Promise<R>): IAction<any, R> {
-    if (this.__actions.filter(a => a.name === name).length !== 0) {
-      throw new Error(`Action "${name}" has been registered`)
+    return addAction(this.__actions, name, handler, this)
+  }
+
+  public clearActions (name?: string): void {
+    if (name) {
+      if (this.__actions[name]) {
+        this.__actions[name].slice().forEach(m => { m.dispose() })
+      }
+    } else {
+      Object.keys(this.__actions).forEach(n => { this.clearActions(n) })
     }
-    const action: IAction<any, R> = { name, onDispatch: (payload) => handler.call(this, payload) }
-    this.__actions.push(action)
-    return action
   }
 
   public subscribe (fn: Subscriber<S>, options?: ISubscribeOptions): () => void {
@@ -169,47 +219,73 @@ export class Store<S extends object, G extends IGettersTree<S>> extends VueModel
   }
 
   public commit (mutation: IMutation<void>): void
+  public commit (mutation: string, payload?: any): void
   public commit<P> (mutation: IMutation<P>, payload: P): void
-  public commit (mutation: IMutation<any>, payload?: any): void {
-    if (this.__mutations.indexOf(mutation) === -1 && Store.__mutations.indexOf(mutation) === -1) {
-      throw new Error(`Unknown mutation "${mutation.name}"`)
+  public commit (mutation: string | IMutation<any>, payload?: any): void {
+    const type = typeof mutation === 'string' ? mutation : mutation.type
+    if (typeof mutation === 'string') {
+      if (Object.prototype.hasOwnProperty.call(this.__mutations, mutation)) {
+        this.__mutations[mutation].slice().forEach(m => { m(payload) })
+      } else {
+        Store.commit(mutation, payload)
+      }
+    } else {
+      if (mutation.isDisposed()) throw new Error(`Disposed mutation "${mutation.type}"`)
+      if (Object.prototype.hasOwnProperty.call(this.__mutations, mutation.type) && this.__mutations[mutation.type].indexOf(mutation) !== -1) {
+        mutation(payload)
+      } else {
+        Store.commit(mutation, payload)
+      }
     }
 
     const id = oid()
-    mutation.onCommit(payload)
 
     this.__subscribers.slice().forEach(sub => {
-      sub(new MutationEvent(id, payload, mutation.name), this.state, null)
+      sub(new MutationEvent(id, payload, type), this.state, null)
     })
   }
 
   public dispatch<R> (action: IAction<void, R>): Promise<R>
+  public dispatch (action: string, payload?: any): Promise<any[]>
   public dispatch<P, R> (action: IAction<P, R>, payload: P): Promise<R>
-  public dispatch<R> (action: IAction<any, R>, payload?: any): Promise<R | R[]> {
-    if (this.__actions.indexOf(action) === -1 && Store.__actions.indexOf(action) === -1) {
-      throw new Error(`Unknown action "${action.name}"`)
-    }
+  public dispatch (action: string | IAction<any, any>, payload?: any): Promise<any> {
+    const type: string = typeof action === 'string' ? action : action.type
 
     const id = oid()
 
     this.__subscribers.slice().forEach(sub => {
-      sub(new ActionEvent(id, payload, 'before', action.name), this.state, null)
+      sub(new ActionEvent(id, payload, 'before', type), this.state, null)
     })
 
-    const promise: Promise<R> = Promise.resolve(action.onDispatch(payload))
+    let promise: Promise<any>
 
-    return new Promise<R | R[]>((resolve, reject) => {
+    if (typeof action === 'string') {
+      if (Object.prototype.hasOwnProperty.call(this.__actions, action)) {
+        promise = Promise.all(this.__actions[action].slice().map(a => Promise.resolve(a(payload))))
+      } else {
+        promise = Store.dispatch(action, payload)
+      }
+    } else {
+      if (action.isDisposed()) throw new Error(`Disposed action "${action.type}"`)
+      if (Object.prototype.hasOwnProperty.call(this.__actions, action.type) && this.__actions[action.type].indexOf(action) !== -1) {
+        promise = action(payload)
+      } else {
+        promise = Store.dispatch(action, payload)
+      }
+    }
+
+    return new Promise<any>((resolve, reject) => {
       promise.then((r) => {
         try {
           this.__subscribers.slice().forEach(sub => {
-            sub(new ActionEvent(id, payload, 'after', action.name), this.state, null)
+            sub(new ActionEvent(id, payload, 'after', type), this.state, null)
           })
         } catch (_) {}
         resolve(r)
       }).catch(error => {
         try {
           this.__subscribers.slice().forEach(sub => {
-            sub(new ActionEvent(id, payload, 'error', action.name), this.state, error)
+            sub(new ActionEvent(id, payload, 'error', type), this.state, error)
           })
         } catch (_) {}
         reject(error)

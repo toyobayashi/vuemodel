@@ -15,11 +15,12 @@ export interface IMutation<P>
 
 |  Property | Type | Description |
 |  --- | --- | --- |
-|  [name](./vuemodel.imutation.name.md) | string |  |
+|  [type](./vuemodel.imutation.type.md) | string |  |
 
 ## Methods
 
 |  Method | Description |
 |  --- | --- |
-|  [onCommit(payload)](./vuemodel.imutation.oncommit.md) |  |
+|  [dispose()](./vuemodel.imutation.dispose.md) |  |
+|  [isDisposed()](./vuemodel.imutation.isdisposed.md) |  |
 

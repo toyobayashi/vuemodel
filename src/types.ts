@@ -1,13 +1,17 @@
 /** @public */
 export interface IAction<P, R> {
-  name: string
-  onDispatch (payload: P): R | Promise<R>
+  (payload: P): R | Promise<R>
+  dispose (): void
+  isDisposed (): boolean
+  type: string
 }
 
 /** @public */
 export interface IMutation<P> {
-  name: string
-  onCommit (payload: P): void
+  (payload: P): void
+  dispose (): void
+  isDisposed (): boolean
+  type: string
 }
 
 /** @public */

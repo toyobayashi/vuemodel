@@ -1,3 +1,4 @@
+import type { Store } from './Store'
 import type { IAction, IMutation, ISubscriberEvent } from './types'
 
 // eslint-disable-next-line @typescript-eslint/no-invalid-void-type
@@ -111,4 +112,60 @@ export function deepCopy<T> (obj: T, cache: Array<{ original: T; copy: any }> = 
   })
 
   return copy
+}
+
+export function addMutation<P> (mutations: Record<string, Array<IMutation<any>>>, name: string, handler: (payload: P) => void, self?: Store<any, any>): IMutation<P> {
+  let disposed = false
+  const mutation: IMutation<P> = function wrappedMutationHandler (payload) {
+    handler.call(self, payload)
+  }
+  mutation.type = name
+  mutation.isDisposed = function isDisposed () {
+    return disposed
+  }
+  mutation.dispose = function dispose () {
+    if (disposed) return
+    const array = mutations[name]
+    const i = array.indexOf(mutation)
+    if (i !== -1) {
+      array.splice(i, 1)
+    }
+    if (array.length === 0) {
+      // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
+      delete mutations[name]
+    }
+    disposed = true
+  }
+
+  mutations[name] = mutations[name] || []
+  mutations[name].push(mutation)
+  return mutation
+}
+
+export function addAction<P, R> (actions: Record<string, Array<IAction<any, any>>>, name: string, handler: (payload: P) => R | Promise<R>, self?: Store<any, any>): IAction<P, R> {
+  let disposed = false
+  const action: IAction<P, R> = function wrappedActionHandler (payload) {
+    return handler.call(self, payload)
+  }
+  action.type = name
+  action.isDisposed = function isDisposed () {
+    return disposed
+  }
+  action.dispose = function dispose () {
+    if (disposed) return
+    const array = actions[name]
+    const i = array.indexOf(action)
+    if (i !== -1) {
+      array.splice(i, 1)
+    }
+    if (array.length === 0) {
+      // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
+      delete actions[name]
+    }
+    disposed = true
+  }
+
+  actions[name] = actions[name] || []
+  actions[name].push(action)
+  return action
 }

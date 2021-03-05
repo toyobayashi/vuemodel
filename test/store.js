@@ -20,7 +20,8 @@ class Store {
       },
       plugins: [
         vuemodel.createLogger()
-      ]
+      ],
+      devtools: true
     })
 
     this.addMutation = this.__model.registerMutation('m_add', function (n) {
@@ -28,6 +29,10 @@ class Store {
     })
 
     this.addAction = this.__model.registerAction('a_add', (n) => {
+      this.__model.commit(this.addMutation, n)
+      return Promise.resolve(this.state.a.count)
+    })
+    this.addAction2 = this.__model.registerAction('a_add', (n) => {
       this.__model.commit(this.addMutation, n)
       return Promise.resolve(this.state.a.count)
     })
@@ -49,8 +54,11 @@ class Store {
   }
 
   add (n = 1) {
-    return this.__model.dispatch(this.addAction, n).then(r => {
+    return this.__model.dispatch('a_add', n).then(r => {
       console.log(r)
+    }).then(() => {
+      // this.__model.clearActions()
+      // console.log(this.__model)
     })
   }
 

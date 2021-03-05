@@ -21,12 +21,13 @@ export default function devtoolPlugin<S extends object> (store: Store<S, any>): 
     configurable: true,
     enumerable: false,
     get () {
-      const o = Object.create(null)
-      ;(store as any).__mutations.forEach((m: any) => {
-        o[m.name] = o[m.name] || []
-        o[m.name].push(m.onCommit)
-      })
-      return o
+      // const o = Object.create(null)
+      // ;(store as any).__mutations.forEach((m: any) => {
+      //   o[m.name] = o[m.name] || []
+      //   o[m.name].push(m.onCommit)
+      // })
+      // return o
+      return (store as any).__mutations
     }
   })
 

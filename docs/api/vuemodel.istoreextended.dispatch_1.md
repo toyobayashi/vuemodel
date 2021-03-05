@@ -7,17 +7,17 @@
 <b>Signature:</b>
 
 ```typescript
-dispatch<P, R>(action: IAction<P, R>, payload: P): Promise<R>;
+dispatch(action: string, payload?: any): Promise<any[]>;
 ```
 
 ## Parameters
 
 |  Parameter | Type | Description |
 |  --- | --- | --- |
-|  action | [IAction](./vuemodel.iaction.md)<!-- -->&lt;P, R&gt; |  |
-|  payload | P |  |
+|  action | string |  |
+|  payload | any |  |
 
 <b>Returns:</b>
 
-Promise&lt;R&gt;
+Promise&lt;any\[\]&gt;
 

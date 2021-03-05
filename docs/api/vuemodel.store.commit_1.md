@@ -7,15 +7,15 @@
 <b>Signature:</b>
 
 ```typescript
-static commit<P>(mutation: IMutation<P>, payload: P): void;
+static commit(mutation: string, payload?: any): void;
 ```
 
 ## Parameters
 
 |  Parameter | Type | Description |
 |  --- | --- | --- |
-|  mutation | [IMutation](./vuemodel.imutation.md)<!-- -->&lt;P&gt; |  |
-|  payload | P |  |
+|  mutation | string |  |
+|  payload | any |  |
 
 <b>Returns:</b>
 

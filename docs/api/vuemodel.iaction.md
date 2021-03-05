@@ -15,11 +15,12 @@ export interface IAction<P, R>
 
 |  Property | Type | Description |
 |  --- | --- | --- |
-|  [name](./vuemodel.iaction.name.md) | string |  |
+|  [type](./vuemodel.iaction.type.md) | string |  |
 
 ## Methods
 
 |  Method | Description |
 |  --- | --- |
-|  [onDispatch(payload)](./vuemodel.iaction.ondispatch.md) |  |
+|  [dispose()](./vuemodel.iaction.dispose.md) |  |
+|  [isDisposed()](./vuemodel.iaction.isdisposed.md) |  |
 
