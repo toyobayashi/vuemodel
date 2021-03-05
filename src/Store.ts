@@ -110,7 +110,7 @@ export class Store<S extends object, G extends IGettersTree<S>> extends VueModel
     } else {
       if (action.isDisposed()) throw new Error(`Disposed action "${action.type}"`)
       if (Object.prototype.hasOwnProperty.call(Store.__actions, action.type) && Store.__actions[action.type].indexOf(action) !== -1) {
-        return action(payload)
+        return Promise.resolve(action(payload))
       } else {
         throw new Error(`Unknown action "${action.type}"`)
       }
@@ -268,7 +268,7 @@ export class Store<S extends object, G extends IGettersTree<S>> extends VueModel
     } else {
       if (action.isDisposed()) throw new Error(`Disposed action "${action.type}"`)
       if (Object.prototype.hasOwnProperty.call(this.__actions, action.type) && this.__actions[action.type].indexOf(action) !== -1) {
-        promise = action(payload)
+        promise = Promise.resolve(action(payload))
       } else {
         promise = Store.dispatch(action, payload)
       }
