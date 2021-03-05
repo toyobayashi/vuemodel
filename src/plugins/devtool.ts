@@ -1,6 +1,6 @@
 import type { Store } from '../Store'
 
-const devtoolHook = typeof __VUE_DEVTOOLS_GLOBAL_HOOK__ === 'undefined' ? undefined : __VUE_DEVTOOLS_GLOBAL_HOOK__
+const devtoolHook = /*#__PURE__*/ (() => typeof __VUE_DEVTOOLS_GLOBAL_HOOK__ === 'undefined' ? undefined : __VUE_DEVTOOLS_GLOBAL_HOOK__)()
 
 export default function devtoolPlugin<S extends object> (store: Store<S, any>): void {
   if (!devtoolHook) return
@@ -21,12 +21,6 @@ export default function devtoolPlugin<S extends object> (store: Store<S, any>): 
     configurable: true,
     enumerable: false,
     get () {
-      // const o = Object.create(null)
-      // ;(store as any).__mutations.forEach((m: any) => {
-      //   o[m.name] = o[m.name] || []
-      //   o[m.name].push(m.onCommit)
-      // })
-      // return o
       return (store as any).__mutations
     }
   })

@@ -10,6 +10,7 @@ module.exports = {
   ],
   rules: {
     'no-void': 'off',
+    'spaced-comment': ['error', 'always', { block: { exceptions: ['#__PURE__'] } }],
     '@typescript-eslint/no-unused-vars': 'error',
     '@typescript-eslint/method-signature-style': 'off',
     '@typescript-eslint/no-namespace': 'off',

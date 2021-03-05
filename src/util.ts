@@ -11,7 +11,7 @@ export function forEach<T> (arr: T[], fn: (value: T, index: number, self: T[]) =
   }
 }
 
-export const oid = (function () {
+export const oid = /*#__PURE__*/ (function () {
   let index = 0
   const PROCESS_UNIQUE: [number, number, number, number, number] = [0, 0, 0, 0, 0]
 
