@@ -1,6 +1,6 @@
 {
   "name": "@tybys/vuemodel",
-  "version": "3.1.1",
+  "version": "3.1.2",
   "description": "Global state management library for Vue and React",
   "jsdelivr": "./dist/vuemodel.js",
   "unpkg": "./dist/vuemodel.js",
@@ -37,7 +37,7 @@
     "access": "public"
   },
   "devDependencies": {
-    "@tybys/tsgo": "^0.8.4",
+    "@tybys/tsgo": "^0.9.0",
     "@types/node": "^14.14.31",
     "@typescript-eslint/eslint-plugin": "^4.15.1",
     "@typescript-eslint/parser": "^4.15.1",
